@@ -13,7 +13,7 @@
         android:id="@+id/display_view"
         android:layout_height="0dp"
         android:layout_width="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="0.70" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,6 +32,12 @@
             android:drawSelectorOnTop="true"
             android:entries="@array/imageSources"
         />
+
+        <ImageSwitcher
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageSwitcher"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/load_image_button"
