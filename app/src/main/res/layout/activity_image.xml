@@ -25,7 +25,7 @@
         <Spinner
             android:id="@+id/source_spinner"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1.56"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
@@ -58,21 +58,22 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp">
+            android:layout_marginRight="5dp"
+            android:weightSum="1">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:text="Freeze:"/>
 
             <Switch
                 android:id="@+id/freeze_toggle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1.01" />
 
         </LinearLayout>
 
