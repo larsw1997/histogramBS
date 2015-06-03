@@ -125,34 +125,41 @@ public class CameraImageSource implements ImageSource, Camera.PreviewCallback {
     public void setFrozen(boolean frozen) {
         this.frozen = frozen;
     }
-
+    private int counter = 0;
     byte[] yuvBuffer = null;
 
     /* Called when a new image arrives from the camera */
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
-        Camera.Size size = camera.getParameters().getPreviewSize();
-        Camera.CameraInfo info = new Camera.CameraInfo();
-        Camera.getCameraInfo(this.currentCamera, info);
+        if(counter == 20) {
+            Camera.Size size = camera.getParameters().getPreviewSize();
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(this.currentCamera, info);
 
-        this.imageWidth = size.width;
-        this.imageHeight = size.height;
-        int numPixels = this.imageWidth * this.imageHeight;
-        if (this.currentImage == null || this.currentImage.length != numPixels)
-            this.currentImage = new int[numPixels];
-        /* The incoming image data is YUV, so we have to convert it. */
-        convertYUV420SPtoARGB(this.currentImage, data, this.imageWidth, this.imageHeight,
-                display.getRotation(), info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT);
+            this.imageWidth = size.width;
+            this.imageHeight = size.height;
+            int numPixels = this.imageWidth * this.imageHeight;
+            if (this.currentImage == null || this.currentImage.length != numPixels)
+                this.currentImage = new int[numPixels];
+            /* The incoming image data is YUV, so we have to convert it. */
+            convertYUV420SPtoARGB(this.currentImage, data, this.imageWidth, this.imageHeight,
+                    display.getRotation(), info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT);
 
-        switch (display.getRotation()) {
-            case Surface.ROTATION_90: case Surface.ROTATION_270:
-                this.imageWidth = size.height;
-                this.imageHeight = size.width;
-            break;
+            switch (display.getRotation()) {
+                case Surface.ROTATION_90:
+                case Surface.ROTATION_270:
+                    this.imageWidth = size.height;
+                    this.imageHeight = size.width;
+                    break;
+            }
+
+            if (!this.frozen && this.listener != null)
+                this.listener.onImage(this.currentImage, this.imageWidth, this.imageHeight);
+
+            counter = 0;
         }
 
-        if (!this.frozen && this.listener != null)
-            this.listener.onImage(this.currentImage, this.imageWidth, this.imageHeight);
+        counter++;
     }
 
     /*** YUV to RGB conversion ***/

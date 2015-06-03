@@ -130,9 +130,7 @@ public class ImageDisplayView extends View implements ImageListener {
                 float maxHeight = this.getHeight() / (float)1.2;
                 float maxWidth = this.getWidth() / (float)1.2;
                 float binWidth = (maxWidth - 40) / binSize;
-                int binCount = (int)Math.ceil(256 / binSize);
-                int curBin = 0;
-                int binHeight[] = new int[binCount];
+                int binHeight[] = new int[256 / binSize + 1];
                 int tempHeights[] = null;
 
                 for (int i = 0; i < greenArray.length; i++) {
@@ -142,9 +140,10 @@ public class ImageDisplayView extends View implements ImageListener {
                 tempHeights = binHeight;
                 Arrays.sort(tempHeights);
                 int ratio = (this.getHeight() / 2) / tempHeights[tempHeights.length - 1];
+                paint.setColor(Color.GREEN);
 
-                for (int i = 0; i < binSize; i++) {
-                    canvas.drawRect(20 + i * binWidth, 200, 20 + i * binWidth + binWidth, ratio * binHeight[i], paint);
+                for (int i = 0; i < binHeight.length; i++) {
+                    canvas.drawRect(20 + i * binWidth, 1000 - (ratio * binHeight[i]), 20 + i * binWidth + binWidth, maxHeight, paint);
                 }
             }
 
