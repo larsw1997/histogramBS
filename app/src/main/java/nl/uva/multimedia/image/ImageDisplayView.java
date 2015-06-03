@@ -41,9 +41,19 @@ public class ImageDisplayView extends View implements ImageListener {
         /* When we recieve an image, simply store it and invalidate the View so it will be
          * redrawn. */
         this.currentImage = argb;
+        calcGreen(argb);
         this.imageWidth = width;
         this.imageHeight = height;
         this.invalidate();
+    }
+
+    public void calcGreen(int[] argb) {
+        int[] greenVals = new int[argb.length];
+
+        // Put all green values into array
+        for(int i = 0; i < argb.length; i++) {
+            greenVals[i] = argb[i] >> 8 & 255;
+        }
     }
 
     @Override
