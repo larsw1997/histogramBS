@@ -17,7 +17,7 @@ import android.widget.SeekBar;
  * This is a View that displays incoming images.
  */
 public class ImageDisplayView extends View implements ImageListener {
-    private int binSize;
+    private static int binSize;
     /*** Constructors ***/
 
     public ImageDisplayView(Context context) {
@@ -57,7 +57,9 @@ public class ImageDisplayView extends View implements ImageListener {
         }
     }
 
-
+    public static void setBinSize(int newBinSize) {
+        binSize = newBinSize;
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
