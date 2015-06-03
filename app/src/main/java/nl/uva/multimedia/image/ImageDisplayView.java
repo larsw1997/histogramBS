@@ -138,9 +138,7 @@ public class ImageDisplayView extends View implements ImageListener {
                 int curBin = 0;
 
                 for (int i = 0; i < curGreenArray.length; i++) {
-                    curBin = curGreenArray[i] / curBinSize;
-                    if(curBin >= curBinSize)
-                        curBin = curBinSize - 1;
+                    curBin = (int)Math.floor(curGreenArray[i] / (256 / (double)curBinSize));
                     binHeight[curBin]++;
                 }
 
