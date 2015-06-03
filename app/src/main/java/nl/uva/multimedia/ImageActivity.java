@@ -94,7 +94,7 @@ public class ImageActivity extends Activity {
         ((SeekBar)findViewById(R.id.seek_bar)).setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        binSize = progress;
+                        binSize = progress + 1;
                         t.setText(Integer.toString(binSize));
                         ImageDisplayView.setBinSize(binSize);
                     }

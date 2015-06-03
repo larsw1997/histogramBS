@@ -40,6 +40,7 @@ public class ImageDisplayView extends View implements ImageListener {
 
     /*** Green value stats ***/
 
+    private int[] greenArray = null;
     private int mean, median, stdDev;
 
     @Override
@@ -67,6 +68,8 @@ public class ImageDisplayView extends View implements ImageListener {
         mean = mean / greenVals.length;
         calcMedian(greenVals);
         calcStdDev(greenVals);
+
+        greenArray = greenVals;
     }
 
     public static void setBinSize(int newBinSize) {
@@ -106,14 +109,15 @@ public class ImageDisplayView extends View implements ImageListener {
         if (this.currentImage != null) {
             /* Center the image...
             int left = (this.getWidth() - this.imageWidth) / 2;
-            int top = (this.getHeight() - this.imageHeight) / 2; */
+            int top = (this.getHeight() - this.imageHeight) / 2;
 
-            /* ...and draw it. < fuck dat
+            // ...and draw it.
             canvas.drawBitmap(this.currentImage, 0, this.imageWidth, left, top, this.imageWidth,
                     this.imageHeight, true, null); */
 
             Paint paint = new Paint();
             paint.setColor(Color.WHITE);
+            paint.setAlpha(255);
             canvas.drawPaint(paint);
 
             paint.setColor(Color.BLACK);
@@ -121,6 +125,33 @@ public class ImageDisplayView extends View implements ImageListener {
             canvas.drawText("Mean: " + mean, 10, 50, paint);
             canvas.drawText("Median: " + median, 10, 100, paint);
             canvas.drawText("Std-Dev: " + stdDev, 10, 150, paint);
+
+            if(binSize > 0) {
+                float maxHeight = this.getHeight() / (float)1.2;
+                float maxWidth = this.getWidth() / (float)1.2;
+                float binWidth = (maxWidth - 40) / binSize;
+                double binCount = Math.ceil(256 / binSize);
+                int curBin = 0;
+                int binHeight[] = new int[binSize];
+                int tempHeights[] = null;
+
+                for (int i = 0; i < greenArray.length; i++) {
+                    binHeight[curBin] += greenArray[i];
+
+                    if (i == Math.floor(curBin * binCount + binCount)) {
+                        curBin++;
+                    }
+                }
+
+                /*tempHeights = binHeight;
+                Arrays.sort(tempHeights);
+                int ratio = (this.getHeight() / 2) / tempHeights[tempHeights.length - 1];
+
+                for (int i = 0; i < curBin; i++) {
+                    canvas.drawRect(20 + i * binWidth, 200, 20 + i * binWidth + binWidth, ratio * binHeight[i], paint);
+                }*/
+            }
+
         }
     }
 
