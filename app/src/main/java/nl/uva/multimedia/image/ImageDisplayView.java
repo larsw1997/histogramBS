@@ -11,12 +11,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.SeekBar;
 
 /*
  * This is a View that displays incoming images.
  */
 public class ImageDisplayView extends View implements ImageListener {
-
+    private int binSize;
     /*** Constructors ***/
 
     public ImageDisplayView(Context context) {
@@ -55,6 +56,8 @@ public class ImageDisplayView extends View implements ImageListener {
             greenVals[i] = argb[i] >> 8 & 255;
         }
     }
+
+
 
     @Override
     protected void onDraw(Canvas canvas) {

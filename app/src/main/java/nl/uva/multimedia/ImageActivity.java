@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -31,7 +33,7 @@ public class ImageActivity extends Activity {
     final int SOURCE_BACK_CAMERA = 0;
     final int SOURCE_FRONT_CAMERA = 1;
     final int SOURCE_IMAGE = 2;
-
+    private int binSize = 0;
     private CameraImageSource cis;
     private FileImageSource fis;
 
@@ -53,35 +55,59 @@ public class ImageActivity extends Activity {
 
         /* Switching between sources: */
         sourceSpinner.setOnItemSelectedListener(
-            new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case SOURCE_BACK_CAMERA:
-                        ImageActivity.this.cis.switchTo(CameraImageSource.BACK_CAMERA);
-                        ImageActivity.this.switchToCamera();
-                        break;
-                    case SOURCE_FRONT_CAMERA:
-                        ImageActivity.this.cis.switchTo(CameraImageSource.FRONT_CAMERA);
-                        ImageActivity.this.switchToCamera();
-                        break;
-                    case SOURCE_IMAGE:
-                        ImageActivity.this.switchToImage();
-                        break;
-                }
-            }
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        switch (position) {
+                            case SOURCE_BACK_CAMERA:
+                                ImageActivity.this.cis.switchTo(CameraImageSource.BACK_CAMERA);
+                                ImageActivity.this.switchToCamera();
+                                break;
+                            case SOURCE_FRONT_CAMERA:
+                                ImageActivity.this.cis.switchTo(CameraImageSource.FRONT_CAMERA);
+                                ImageActivity.this.switchToCamera();
+                                break;
+                            case SOURCE_IMAGE:
+                                ImageActivity.this.switchToImage();
+                                break;
+                        }
+                    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
 
         /* Freeze switch: */
         ((CompoundButton)findViewById(R.id.freeze_toggle)).setOnCheckedChangeListener(
-            new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ImageActivity.this.cis.setFrozen(isChecked);
-            }
-        });
+                new CompoundButton.OnCheckedChangeListener() {
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        ImageActivity.this.cis.setFrozen(isChecked);
+                    }
+                });
+
+        /* Binsize text */
+        final TextView t = (TextView)findViewById(R.id.text_view);
+        t.setText(Integer.toString(binSize));
+
+        /* Seek Bar */
+        ((SeekBar)findViewById(R.id.seek_bar)).setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        binSize = progress;
+                        t.setText(Integer.toString(binSize));
+                    }
+
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+
+
 
         /* "Load image" button: */
         findViewById(R.id.load_image_button).setOnClickListener(new View.OnClickListener() {
@@ -99,6 +125,8 @@ public class ImageActivity extends Activity {
         /* Select the back camera as default source: */
         sourceSpinner.setSelection(SOURCE_BACK_CAMERA);
     }
+
+
 
     private void switchToCamera() {
         // TODO: Onder andere hier wordt een ImageSource aan een View (ter weergave) gekoppeld.
