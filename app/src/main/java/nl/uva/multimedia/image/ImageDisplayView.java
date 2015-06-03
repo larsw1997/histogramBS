@@ -9,6 +9,7 @@ package nl.uva.multimedia.image;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.graphics.*;
@@ -127,14 +128,20 @@ public class ImageDisplayView extends View implements ImageListener {
             canvas.drawText("Std-Dev: " + stdDev, 10, 150, paint);
 
             if(binSize > 0) {
+                int curBinSize = binSize;
+                int curGreenArray[] = greenArray.clone();
                 float maxHeight = (float)(this.getHeight() / 1.5);
-                float maxWidth = (float)(this.getWidth() / 1.5);
-                float binWidth = (maxWidth - 40) / binSize;
-                int binHeight[] = new int[256 / binSize + 1];
+                float maxWidth = this.getWidth();
+                float binWidth = (float)((maxWidth - 40) / (double)curBinSize);
+                int binHeight[] = new int[curBinSize];
                 int tempHeights[] = null;
+                int curBin = 0;
 
-                for (int i = 0; i < greenArray.length; i++) {
-                    binHeight[greenArray[i] / binSize]++;
+                for (int i = 0; i < curGreenArray.length; i++) {
+                    curBin = curGreenArray[i] / curBinSize;
+                    if(curBin >= curBinSize)
+                        curBin = curBinSize - 1;
+                    binHeight[curBin]++;
                 }
 
                 tempHeights = binHeight.clone();
@@ -142,9 +149,12 @@ public class ImageDisplayView extends View implements ImageListener {
                 double ratio = (this.getHeight() / 2) / (double)tempHeights[tempHeights.length - 1];
                 paint.setColor(Color.GREEN);
 
-                for (int i = 0; i < binHeight.length; i++) {
-                    canvas.drawRect(20 + i * binWidth, maxHeight - (float)(ratio * binHeight[i]), 20 + i * binWidth + binWidth, maxHeight, paint);
+                for (int i = 0; i < curBinSize; i++) {
+                    canvas.drawRect(20 + (i * binWidth), maxHeight - (float)(ratio * binHeight[i]), 20 + (i * binWidth) + binWidth, maxHeight, paint);
                 }
+
+                paint.setColor(Color.BLACK);
+                canvas.drawLine(20, maxHeight + 1, maxWidth - 20, maxHeight + 1, paint);
             }
 
         }
