@@ -11,6 +11,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
+import android.graphics.*;
+import java.util.Arrays;
 
 /*
  * This is a View that displays incoming images.
@@ -36,6 +38,10 @@ public class ImageDisplayView extends View implements ImageListener {
     private int[] currentImage = null;
     private int imageWidth, imageHeight;
 
+    /*** Green value stats ***/
+
+    private int mean, median, stdDev;
+
     @Override
     public void onImage(int[] argb, int width, int height) {
         /* When we recieve an image, simply store it and invalidate the View so it will be
@@ -49,11 +55,38 @@ public class ImageDisplayView extends View implements ImageListener {
 
     public void calcGreen(int[] argb) {
         int[] greenVals = new int[argb.length];
+        mean = median = stdDev = 0;
 
         // Put all green values into array
         for(int i = 0; i < argb.length; i++) {
             greenVals[i] = argb[i] >> 8 & 255;
+            mean += greenVals[i];
         }
+
+        mean = mean / greenVals.length;
+        calcMedian(greenVals);
+        calcStdDev(greenVals);
+    }
+
+    public void calcMedian(int[] greenVals) {
+        Arrays.sort(greenVals);
+        int medianL, medianR;
+        int middle = greenVals.length / 2;
+
+        if(greenVals.length % 2 == 0){
+            medianL = greenVals[middle];
+            medianR = greenVals[middle - 1];
+            median = (medianL + medianR) / 2;
+        } else{
+            median = greenVals[middle + 1];
+        }
+    }
+
+    public void calcStdDev(int[] greenVals) {
+        double temp = 0;
+        for(double a : greenVals)
+            temp += (mean - a) * (mean - a);
+        stdDev = Math.sqrt(temp / greenVals.length);
     }
 
     @Override
@@ -65,13 +98,22 @@ public class ImageDisplayView extends View implements ImageListener {
 
         /* If there is an image to be drawn: */
         if (this.currentImage != null) {
-            /* Center the image... */
+            /* Center the image...
             int left = (this.getWidth() - this.imageWidth) / 2;
-            int top = (this.getHeight() - this.imageHeight) / 2;
+            int top = (this.getHeight() - this.imageHeight) / 2; */
 
-            /* ...and draw it. */
+            /* ...and draw it. < fuck dat
             canvas.drawBitmap(this.currentImage, 0, this.imageWidth, left, top, this.imageWidth,
-                    this.imageHeight, true, null);
+                    this.imageHeight, true, null); */
+
+            Paint paint = new Paint();
+            paint.setColor(Color.WHITE);
+            canvas.drawPaint(paint);
+
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(60);
+            canvas.drawText("Mean: " + mean, 10, 50, paint);
+            canvas.drawText("Median: " + median, 10, 100, paint);
         }
     }
 
