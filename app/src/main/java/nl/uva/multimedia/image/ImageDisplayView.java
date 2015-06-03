@@ -130,18 +130,15 @@ public class ImageDisplayView extends View implements ImageListener {
                 float maxHeight = this.getHeight() / (float)1.2;
                 float maxWidth = this.getWidth() / (float)1.2;
                 float binWidth = (maxWidth - 40) / binSize;
-                double binCount = Math.ceil(256 / binSize);
+                int binCount = (256 / binSize) + 1;
                 int curBin = 0;
-                int binHeight[] = new int[binSize];
+                int binHeight[] = new int[binCount];
                 int tempHeights[] = null;
 
-                for (int i = 0; i < greenArray.length; i++) {
-                    binHeight[curBin] += greenArray[i];
-
-                    if (i == Math.floor(curBin * binCount + binCount)) {
-                        curBin++;
+                    for (int i = 0; i < greenArray.length; i++) {
+                        curBin = greenArray[i] / binSize;
+                        binHeight[curBin] += 1;
                     }
-                }
 
                 /*tempHeights = binHeight;
                 Arrays.sort(tempHeights);
