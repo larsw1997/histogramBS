@@ -112,8 +112,9 @@ public class ImageDisplayView extends View implements ImageListener {
         double ratio = (this.getHeight() / 2) / (double)maxBinHeight;
         graphPaint.setColor(Color.GREEN);
 
-
+        // Loop through all bins
         for (int i = 0; i < curBinCount; i++) {
+            // Draw the current bin
             canvas.drawRect(180 + (i * binWidth), maxHeight - (float)(ratio * binHeight[i]),
                     180 + (i * binWidth) + binWidth, maxHeight, graphPaint);
             if(i % ((curBinCount / 12) + 1) == 0) {
@@ -128,7 +129,15 @@ public class ImageDisplayView extends View implements ImageListener {
         }
     }
 
-    /* Draws the  axes for the graph */
+    /**
+     * Draws the axes for the graph
+     * @param canvas - to draw on
+     * @param maxBinHeight - height of the highest bin
+     * @param graphTop - top of the graph
+     * @param graphSize - size of the graph
+     * @param maxHeight - maximum draw height
+     * @param maxWidth - maximum draw width
+     */
     private void drawAxes(Canvas canvas, int maxBinHeight, int graphTop, int graphSize,
                           float maxHeight, float maxWidth) {
         graphPaint.setColor(Color.BLACK);
