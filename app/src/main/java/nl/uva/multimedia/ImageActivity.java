@@ -3,6 +3,7 @@
  * of the UvA Informatica bachelor.
  *
  * Nardi Lam, 2015 (based on code by I.M.J. Kamps, S.J.R. van Schaik, R. de Vries, 2013)
+ * Aanpassing door Lars Wenker en Bart van den Aardweg
  */
 
 package nl.uva.multimedia;
@@ -39,11 +40,6 @@ public class ImageActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO: Dit is het "beginpunt" van de applicatie!
-        // Als je vanaf hier de code stap voor stap doorloopt zul je alles tegen moeten komen.
-        // De layout is gedefiniëerd in res/layout/activity_image.xml, dit wordt ingesteld via
-        // this.setContentView() hieronder.
-
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_image);
 
@@ -92,19 +88,16 @@ public class ImageActivity extends Activity {
 
         /* Seek Bar */
         ((SeekBar)findViewById(R.id.seek_bar)).setOnSeekBarChangeListener(
+                /* Listener */
                 new SeekBar.OnSeekBarChangeListener() {
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         binCount = progress + 1;
                         t.setText(Integer.toString(binCount));
                         ImageDisplayView.setbinCount(binCount);
                     }
-
                     public void onStartTrackingTouch(SeekBar seekBar) {
-
                     }
-
                     public void onStopTrackingTouch(SeekBar seekBar) {
-
                     }
                 });
 
@@ -130,9 +123,6 @@ public class ImageActivity extends Activity {
 
 
     private void switchToCamera() {
-        // TODO: Onder andere hier wordt een ImageSource aan een View (ter weergave) gekoppeld.
-        // Als je nog iets tussen de twee in zou willen plaatsen, is dit dus het moment!
-
         /* Set camera as active source: */
         ImageDisplayView idv = (ImageDisplayView)findViewById(R.id.display_view);
         if (idv.getImageSource() != this.cis) {
