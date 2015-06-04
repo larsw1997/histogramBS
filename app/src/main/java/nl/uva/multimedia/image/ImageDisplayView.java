@@ -19,7 +19,7 @@ import java.util.Arrays;
  * This is a View that displays incoming images.
  */
 public class ImageDisplayView extends View implements ImageListener {
-    private static int binSize;
+    private static int binCount;
     /*** Constructors ***/
 
     public ImageDisplayView(Context context) {
@@ -55,8 +55,26 @@ public class ImageDisplayView extends View implements ImageListener {
         this.invalidate();
     }
 
-    public static void setBinSize(int newBinSize) {
-        binSize = newBinSize;
+    public void calcGreen(int[] argb) {
+        int[] greenVals = new int[argb.length];
+
+        mean = median = stdDev = 0;
+
+        // Put all green values into array
+        for(int i = 0; i < argb.length; i++) {
+            greenVals[i] = argb[i] >> 8 & 255;
+            mean += greenVals[i];
+        }
+
+        mean = mean / greenVals.length;
+        calcMedian(greenVals);
+        calcStdDev(greenVals);
+
+        greenArray = greenVals;
+    }
+
+    public static void setbinCount(int newbinCount) {
+        binCount = newbinCount;
     }
 
     @Override
@@ -77,6 +95,13 @@ public class ImageDisplayView extends View implements ImageListener {
             paint.setColor(Color.WHITE);
             paint.setAlpha(255);
             canvas.drawPaint(paint);
+            paint.setStrokeWidth(6);
+
+            Paint graph = new Paint();
+            graph.setColor(Color.BLACK);
+            graph.setAlpha(255);
+            graph.setStrokeWidth(6);
+            graph.setTextSize(30);
 
             paint.setColor(Color.BLACK);
             paint.setTextSize(60);
@@ -84,19 +109,22 @@ public class ImageDisplayView extends View implements ImageListener {
             canvas.drawText("Median: " + greenStats.getMedian(), 10, 100, paint);
             canvas.drawText("Std-Dev: " + greenStats.getStdDev(), 10, 150, paint);
 
-            if(binSize > 0) {
-                int curBinSize = binSize;
+            if(binCount > 0) {
+                int curbinCount = binCount;
                 int curGreenArray[] = greenArray.clone();
                 float maxHeight = (float)(this.getHeight() / 1.5);
                 float maxWidth = this.getWidth();
-                float binWidth = (float)((maxWidth - 40) / (double)curBinSize);
-                int binHeight[] = new int[curBinSize];
+                float binWidth = (float)((maxWidth - 200) / (double)curbinCount);
+                int binHeight[] = new int[curbinCount];
                 int tempHeights[] = null;
                 int curBin = 0;
+                int graphTop = (int)(maxHeight - this.getHeight() / 2);
+                int graphSize = (int) (maxHeight - graphTop);
 
                 for (int i = 0; i < curGreenArray.length; i++) {
-                    curBin = (int)Math.floor(curGreenArray[i] / (256 / (double)curBinSize));
+                    curBin = (int)Math.floor(curGreenArray[i] / (256 / (double)curbinCount));
                     binHeight[curBin]++;
+
                 }
 
                 tempHeights = binHeight.clone();
@@ -104,12 +132,28 @@ public class ImageDisplayView extends View implements ImageListener {
                 double ratio = (this.getHeight() / 2) / (double)tempHeights[tempHeights.length - 1];
                 paint.setColor(Color.GREEN);
 
-                for (int i = 0; i < curBinSize; i++) {
-                    canvas.drawRect(20 + (i * binWidth), maxHeight - (float)(ratio * binHeight[i]), 20 + (i * binWidth) + binWidth, maxHeight, paint);
+                graph.setStrokeWidth(2);
+                for (int i = 0; i < curbinCount; i++) {
+                    canvas.drawRect(180 + (i * binWidth), maxHeight - (float)(ratio * binHeight[i]),
+                            180 + (i * binWidth) + binWidth, maxHeight, paint);
+                    canvas.drawLine(180 + (i * binWidth), maxHeight + 3, 180 + (i * binWidth),
+                            maxHeight + 33, graph);
                 }
-
                 paint.setColor(Color.BLACK);
-                canvas.drawLine(20, maxHeight + 1, maxWidth - 20, maxHeight + 1, paint);
+                /* Draws the graph lines and numbers */
+                canvas.drawLine(177, maxHeight + 1, maxWidth - 20, maxHeight + 1, paint);
+                canvas.drawLine(180, maxHeight + 1, 180, graphTop, paint);
+
+                for(int i = 0; i < 10; i++) {
+                    canvas.drawLine(150, graphTop + 3 + (i * graphSize) / 10, 180,
+                            graphTop + 3 + (i * graphSize) / 10, graph);
+                    canvas.drawText(Integer.toString((int)((1 - (i * 0.1)) * tempHeights[tempHeights.length - 1])),
+                            20, graphTop + 15 + (i * graphSize) / 10, graph);
+                }
+                canvas.drawLine(maxWidth - 23, maxHeight + 3, maxWidth - 23, maxHeight + 33, graph);
+                canvas.drawLine(150, maxHeight + 1, 180, maxHeight + 1, graph);
+
+                canvas.drawText("0", 20, maxHeight + 8, graph);
             }
 
         }
