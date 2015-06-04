@@ -55,24 +55,6 @@ public class ImageDisplayView extends View implements ImageListener {
         this.invalidate();
     }
 
-    public void calcGreen(int[] argb) {
-        int[] greenVals = new int[argb.length];
-
-        mean = median = stdDev = 0;
-
-        // Put all green values into array
-        for(int i = 0; i < argb.length; i++) {
-            greenVals[i] = argb[i] >> 8 & 255;
-            mean += greenVals[i];
-        }
-
-        mean = mean / greenVals.length;
-        calcMedian(greenVals);
-        calcStdDev(greenVals);
-
-        greenArray = greenVals;
-    }
-
     public static void setbinCount(int newbinCount) {
         binCount = newbinCount;
     }
