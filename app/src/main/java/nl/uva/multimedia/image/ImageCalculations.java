@@ -7,7 +7,7 @@ import java.util.Arrays;
  * of all green values in an array of argb values.
  */
 public class ImageCalculations {
-    private int[] argb;
+    private int[] argb, greenValues;
     private int mean, median, stdDev;
 
     /**
@@ -16,13 +16,13 @@ public class ImageCalculations {
      */
     public ImageCalculations(int[] argb) {
         this.argb = argb;
-        this.calcGreen();
+        this.greenValues = this.calcGreen();
     }
 
     /**
      * Calculate mean, median and standard deviation of all green values in argb
      */
-    public void calcGreen() {
+    public int[] calcGreen() {
         int[] greenVals = new int[argb.length];
 
         // Reset variables
@@ -41,6 +41,8 @@ public class ImageCalculations {
         // Calculate other stats
         calcMedian(greenVals);
         calcStdDev(greenVals);
+
+        return greenVals;
     }
 
     /**
@@ -81,4 +83,5 @@ public class ImageCalculations {
     public int getMean() { return mean; }
     public int getMedian() { return median; }
     public int getStdDev() { return stdDev; }
+    public int[] getGreenValues() { return greenValues; }
 }

@@ -37,7 +37,6 @@ public class ImageDisplayView extends View implements ImageListener {
     /*** Image drawing ***/
 
     private int[] currentImage = null;
-    private int imageWidth, imageHeight;
 
     /*** Green value stats ***/
 
@@ -50,8 +49,7 @@ public class ImageDisplayView extends View implements ImageListener {
          * redrawn. */
         this.currentImage = argb;
         this.greenStats = new ImageCalculations(argb);
-        this.imageWidth = width;
-        this.imageHeight = height;
+        this.greenArray = greenStats.getGreenValues();
         this.invalidate();
     }
 
@@ -92,21 +90,20 @@ public class ImageDisplayView extends View implements ImageListener {
             canvas.drawText("Std-Dev: " + greenStats.getStdDev(), 10, 150, paint);
 
             if(binCount > 0) {
-                int curbinCount = binCount;
+                int curBinCount = binCount;
                 int curGreenArray[] = greenArray.clone();
                 float maxHeight = (float)(this.getHeight() / 1.5);
                 float maxWidth = this.getWidth();
-                float binWidth = (float)((maxWidth - 200) / (double)curbinCount);
-                int binHeight[] = new int[curbinCount];
+                float binWidth = (float)((maxWidth - 200) / (double)curBinCount);
+                int binHeight[] = new int[curBinCount];
                 int tempHeights[] = null;
                 int curBin = 0;
                 int graphTop = (int)(maxHeight - this.getHeight() / 2);
                 int graphSize = (int) (maxHeight - graphTop);
 
-                for (int i = 0; i < curGreenArray.length; i++) {
-                    curBin = (int)Math.floor(curGreenArray[i] / (256 / (double)curbinCount));
+                for (int curGreenValue : curGreenArray) {
+                    curBin = (int)Math.floor(curGreenValue / (256 / (double)curBinCount));
                     binHeight[curBin]++;
-
                 }
 
                 tempHeights = binHeight.clone();
@@ -115,7 +112,7 @@ public class ImageDisplayView extends View implements ImageListener {
                 paint.setColor(Color.GREEN);
 
                 graph.setStrokeWidth(2);
-                for (int i = 0; i < curbinCount; i++) {
+                for (int i = 0; i < curBinCount; i++) {
                     canvas.drawRect(180 + (i * binWidth), maxHeight - (float)(ratio * binHeight[i]),
                             180 + (i * binWidth) + binWidth, maxHeight, paint);
                     canvas.drawLine(180 + (i * binWidth), maxHeight + 3, 180 + (i * binWidth),
@@ -129,7 +126,7 @@ public class ImageDisplayView extends View implements ImageListener {
                 for(int i = 0; i < 10; i++) {
                     canvas.drawLine(150, graphTop + 3 + (i * graphSize) / 10, 180,
                             graphTop + 3 + (i * graphSize) / 10, graph);
-                    canvas.drawText(Integer.toString((int)((1 - (i * 0.1)) * tempHeights[tempHeights.length - 1])),
+                    canvas.drawText(Integer.toString((int) ((1 - (i * 0.1)) * tempHeights[tempHeights.length - 1])),
                             20, graphTop + 15 + (i * graphSize) / 10, graph);
                 }
                 canvas.drawLine(maxWidth - 23, maxHeight + 3, maxWidth - 23, maxHeight + 33, graph);
