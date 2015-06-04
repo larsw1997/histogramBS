@@ -115,7 +115,7 @@ public class ImageDisplayView extends View implements ImageListener {
         // Loop through all bins
         for (int i = 0; i < curBinCount; i++) {
             // Draw the current bin
-            canvas.drawRect(180 + (i * binWidth), maxHeight - (float)(ratio * binHeight[i]),
+            canvas.drawRect(180 + (i * binWidth), maxHeight - (float) (ratio * binHeight[i]),
                     180 + (i * binWidth) + binWidth, maxHeight, graphPaint);
             if(i % ((curBinCount / 12) + 1) == 0) {
                 canvas.drawLine(180 + (i * binWidth), maxHeight + 3, 180 + (i * binWidth),
@@ -156,12 +156,14 @@ public class ImageDisplayView extends View implements ImageListener {
                     20, graphTop + 15 + (i * graphSize) / 10, axePaint);
         }
 
-        /* Marks the end of X axis */
-        //canvas.drawLine(maxWidth - 21, maxHeight + 3, maxWidth - 21, maxHeight + 33, axePaint);
-
         /* Marks the 0 point on the Y axis */
         canvas.drawLine(150, maxHeight + 1, 180, maxHeight + 1, axePaint);
         canvas.drawText("0", 20, maxHeight + 8, axePaint);
+
+        // Draw axe labels
+        axePaint.setTextSize(40);
+        canvas.drawText("Green value bin", 450, maxHeight + 120, axePaint);
+        canvas.drawText("Amount of pixels", 20, 200, axePaint);
     }
 
     @Override
