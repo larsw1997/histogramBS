@@ -57,6 +57,10 @@ public class ImageDisplayView extends View implements ImageListener {
         binCount = newbinCount;
     }
 
+    private int[] curGreenArray, binHeight, tempHeights;
+    private int curBin, curBinCount, graphTop, graphSize;
+    private float maxHeight, maxWidth, binWidth;
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -90,16 +94,16 @@ public class ImageDisplayView extends View implements ImageListener {
             canvas.drawText("Std-Dev: " + greenStats.getStdDev(), 10, 150, paint);
 
             if(binCount > 0) {
-                int curBinCount = binCount;
-                int curGreenArray[] = greenArray.clone();
-                float maxHeight = (float)(this.getHeight() / 1.5);
-                float maxWidth = this.getWidth();
-                float binWidth = (float)((maxWidth - 200) / (double)curBinCount);
-                int binHeight[] = new int[curBinCount];
-                int tempHeights[] = null;
-                int curBin = 0;
-                int graphTop = (int)(maxHeight - this.getHeight() / 2);
-                int graphSize = (int) (maxHeight - graphTop);
+                curBinCount = binCount;
+                curGreenArray = greenArray.clone();
+                maxHeight = (float)(this.getHeight() / 1.5);
+                maxWidth = this.getWidth();
+                binWidth = (float)((maxWidth - 200) / (double)curBinCount);
+                binHeight = new int[curBinCount];
+                tempHeights = null;
+                curBin = 0;
+                graphTop = (int)(maxHeight - this.getHeight() / 2);
+                graphSize = (int)(maxHeight - graphTop);
 
                 for (int curGreenValue : curGreenArray) {
                     curBin = (int)Math.floor(curGreenValue / (256 / (double)curBinCount));
@@ -110,7 +114,6 @@ public class ImageDisplayView extends View implements ImageListener {
                 Arrays.sort(tempHeights);
                 double ratio = (this.getHeight() / 2) / (double)tempHeights[tempHeights.length - 1];
                 paint.setColor(Color.GREEN);
-
                 graph.setStrokeWidth(2);
                 for (int i = 0; i < curBinCount; i++) {
                     canvas.drawRect(180 + (i * binWidth), maxHeight - (float)(ratio * binHeight[i]),
