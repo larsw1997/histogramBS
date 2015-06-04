@@ -33,7 +33,7 @@ public class ImageActivity extends Activity {
     final int SOURCE_BACK_CAMERA = 0;
     final int SOURCE_FRONT_CAMERA = 1;
     final int SOURCE_IMAGE = 2;
-    private int binSize = 0;
+    private int binCount = 0;
     private CameraImageSource cis;
     private FileImageSource fis;
 
@@ -86,17 +86,17 @@ public class ImageActivity extends Activity {
                     }
                 });
 
-        /* Binsize text */
+        /* binCount text */
         final TextView t = (TextView)findViewById(R.id.text_view);
-        t.setText(Integer.toString(binSize));
+        t.setText(Integer.toString(binCount));
 
         /* Seek Bar */
         ((SeekBar)findViewById(R.id.seek_bar)).setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        binSize = progress + 1;
-                        t.setText(Integer.toString(binSize));
-                        ImageDisplayView.setBinSize(binSize);
+                        binCount = progress + 1;
+                        t.setText(Integer.toString(binCount));
+                        ImageDisplayView.setbinCount(binCount);
                     }
 
                     public void onStartTrackingTouch(SeekBar seekBar) {
@@ -138,7 +138,7 @@ public class ImageActivity extends Activity {
         if (idv.getImageSource() != this.cis) {
             idv.setImageSource(this.cis);
         }
-        ImageDisplayView.setBinSize(binSize);
+        ImageDisplayView.setbinCount(binCount);
         /* Switch out controls: */
         findViewById(R.id.load_image_button).setVisibility(View.GONE);
         findViewById(R.id.freeze_control).setVisibility(View.VISIBLE);
@@ -150,7 +150,7 @@ public class ImageActivity extends Activity {
         if (idv.getImageSource() != this.fis) {
             idv.setImageSource(this.fis);
         }
-        ImageDisplayView.setBinSize(binSize);
+        ImageDisplayView.setbinCount(binCount);
         /* Switch out controls: */
         findViewById(R.id.load_image_button).setVisibility(View.VISIBLE);
         findViewById(R.id.freeze_control).setVisibility(View.GONE);
