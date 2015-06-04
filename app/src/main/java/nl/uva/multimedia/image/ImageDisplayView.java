@@ -96,15 +96,15 @@ public class ImageDisplayView extends View implements ImageListener {
     }
 
     /**
-     * Draw
-     * @param canvas
-     * @param maxBinHeight
-     * @param curBinCount
-     * @param binHeight
-     * @param maxHeight
-     * @param maxWidth
-     * @param binWidth
-     * @param graphTop
+     * Draw the bins to the canvas.
+     * @param canvas - to draw on
+     * @param maxBinHeight - height of the highest bin
+     * @param curBinCount - amount of bins
+     * @param binHeight - array containing all bin heights
+     * @param maxHeight - maximum draw height
+     * @param maxWidth - maximum draw width
+     * @param binWidth - width of one bin
+     * @param graphTop - top of the graph
      */
     private void drawGraph(Canvas canvas, int maxBinHeight, int curBinCount, int[] binHeight,
                            float maxHeight, float maxWidth, float binWidth, int graphTop) {
