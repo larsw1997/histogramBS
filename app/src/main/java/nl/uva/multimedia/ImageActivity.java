@@ -35,6 +35,7 @@ public class ImageActivity extends Activity {
     final int SOURCE_FRONT_CAMERA = 1;
     final int SOURCE_IMAGE = 2;
     private int binCount = 0;
+    private int counter = 0;
     private CameraImageSource cis;
     private FileImageSource fis;
 
@@ -94,9 +95,22 @@ public class ImageActivity extends Activity {
                         binCount = progress + 1;
                         t.setText(Integer.toString(binCount));
                         ImageDisplayView.setbinCount(binCount);
-                    }
+                        CompoundButton freeze = (CompoundButton)findViewById(R.id.freeze_toggle);
+                        if(freeze.isChecked()) {
+                            counter++;
+                            if(counter == 1 || counter == 10) {
+                                ImageDisplayView idv = (ImageDisplayView) findViewById(R.id.display_view);
+                                idv.invalidate();
+                                if(counter == 10) {
+                                    counter = 0;
+                                }
+                            }
+                        }
+                   }
+
                     public void onStartTrackingTouch(SeekBar seekBar) {
                     }
+
                     public void onStopTrackingTouch(SeekBar seekBar) {
                     }
                 });

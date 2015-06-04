@@ -112,11 +112,19 @@ public class ImageDisplayView extends View implements ImageListener {
         double ratio = (this.getHeight() / 2) / (double)maxBinHeight;
         graphPaint.setColor(Color.GREEN);
 
+
         for (int i = 0; i < curBinCount; i++) {
             canvas.drawRect(180 + (i * binWidth), maxHeight - (float)(ratio * binHeight[i]),
                     180 + (i * binWidth) + binWidth, maxHeight, graphPaint);
-            canvas.drawLine(180 + (i * binWidth), maxHeight + 3, 180 + (i * binWidth),
-                    maxHeight + 33, axePaint);
+            if(i % ((curBinCount / 12) + 1) == 0) {
+                canvas.drawLine(180 + (i * binWidth), maxHeight + 3, 180 + (i * binWidth),
+                        maxHeight + 33, axePaint);
+                canvas.drawText(Integer.toString(i), 160 + (i * binWidth), maxHeight + 63, axePaint);
+            }
+            else {
+                canvas.drawLine(180 + (i * binWidth), maxHeight + 3, 180 + (i * binWidth),
+                        maxHeight + 13, axePaint);
+            }
         }
     }
 
@@ -140,7 +148,7 @@ public class ImageDisplayView extends View implements ImageListener {
         }
 
         /* Marks the end of X axis */
-        canvas.drawLine(maxWidth - 21, maxHeight + 3, maxWidth - 21, maxHeight + 33, axePaint);
+        //canvas.drawLine(maxWidth - 21, maxHeight + 3, maxWidth - 21, maxHeight + 33, axePaint);
 
         /* Marks the 0 point on the Y axis */
         canvas.drawLine(150, maxHeight + 1, 180, maxHeight + 1, axePaint);
