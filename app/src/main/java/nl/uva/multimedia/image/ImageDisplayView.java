@@ -42,14 +42,14 @@ public class ImageDisplayView extends View implements ImageListener {
     /*** Green value stats ***/
 
     private int[] greenArray = null;
-    private int mean, median, stdDev;
+    private ImageCalculations greenStats = null;
 
     @Override
     public void onImage(int[] argb, int width, int height) {
         /* When we recieve an image, simply store it and invalidate the View so it will be
          * redrawn. */
         this.currentImage = argb;
-        calcGreen(argb);
+        this.greenStats = new ImageCalculations(argb);
         this.imageWidth = width;
         this.imageHeight = height;
         this.invalidate();
@@ -76,35 +76,10 @@ public class ImageDisplayView extends View implements ImageListener {
     public static void setbinCount(int newbinCount) {
         binCount = newbinCount;
     }
-    
-    public void calcMedian(int[] greenVals) {
-        Arrays.sort(greenVals);
-        int medianL, medianR;
-        int middle = greenVals.length / 2;
-
-        if(greenVals.length % 2 == 0){
-            medianL = greenVals[middle];
-            medianR = greenVals[middle - 1];
-            median = (medianL + medianR) / 2;
-        } else{
-            median = greenVals[middle + 1];
-        }
-    }
-
-    public void calcStdDev(int[] greenVals) {
-        double temp = 0;
-
-        for(double a : greenVals)
-            temp += (mean - a) * (mean - a);
-        stdDev = (int)Math.sqrt(temp / greenVals.length);
-    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        // TODO: Hier wordt een afbeelding op het scherm laten zien!
-        // Je zou hier dus code kunnen plaatsen om iets anders weer te geven.
 
         /* If there is an image to be drawn: */
         if (this.currentImage != null) {
@@ -130,9 +105,9 @@ public class ImageDisplayView extends View implements ImageListener {
 
             paint.setColor(Color.BLACK);
             paint.setTextSize(60);
-            canvas.drawText("Mean: " + mean, 10, 50, paint);
-            canvas.drawText("Median: " + median, 10, 100, paint);
-            canvas.drawText("Std-Dev: " + stdDev, 10, 150, paint);
+            canvas.drawText("Mean: " + greenStats.getMean(), 10, 50, paint);
+            canvas.drawText("Median: " + greenStats.getMedian(), 10, 100, paint);
+            canvas.drawText("Std-Dev: " + greenStats.getStdDev(), 10, 150, paint);
 
             if(binCount > 0) {
                 int curbinCount = binCount;
