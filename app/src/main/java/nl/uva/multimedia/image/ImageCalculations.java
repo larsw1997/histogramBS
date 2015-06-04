@@ -10,6 +10,10 @@ public class ImageCalculations {
     private int[] argb;
     private int mean, median, stdDev;
 
+    /**
+     * Constructor, calls calcGreen to calculate all stats
+     * @param argb - array of argb values
+     */
     public ImageCalculations(int[] argb) {
         this.argb = argb;
         this.calcGreen();
