@@ -89,12 +89,18 @@ public class ImageActivity extends Activity {
 
         /* Seek Bar */
         ((SeekBar)findViewById(R.id.seek_bar)).setOnSeekBarChangeListener(
-                /* Listener */
+                /* Listener for the seekbar */
                 new SeekBar.OnSeekBarChangeListener() {
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         binCount = progress + 1;
                         t.setText(Integer.toString(binCount));
                         ImageDisplayView.setbinCount(binCount);
+
+                        /* Checks if the freeze button is checked, and manually calls the invalidate
+                         * function to redraw the graph when bin count is changed during freeze. The
+                         * counter ensures only every first or 10th change is redrawn to increase
+                         * performance.
+                         */
                         CompoundButton freeze = (CompoundButton)findViewById(R.id.freeze_toggle);
                         if(freeze.isChecked()) {
                             counter++;
