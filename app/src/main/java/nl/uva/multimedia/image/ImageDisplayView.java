@@ -37,6 +37,7 @@ public class ImageDisplayView extends View implements ImageListener {
     /*** Image drawing ***/
 
     private int[] currentImage = null;
+    private Paint graphPaint, axePaint;
 
     /*** Green value stats ***/
 
@@ -50,6 +51,8 @@ public class ImageDisplayView extends View implements ImageListener {
         this.currentImage = argb;
         this.greenStats = new ImageCalculations(argb);
         this.greenArray = greenStats.getGreenValues();
+        this.graphPaint = new Paint();
+        this.axePaint = new Paint();
         this.invalidate();
     }
 
@@ -57,9 +60,85 @@ public class ImageDisplayView extends View implements ImageListener {
         binCount = newbinCount;
     }
 
-    private int[] curGreenArray, binHeight, tempHeights;
-    private int curBin, curBinCount, graphTop, graphSize;
-    private float maxHeight, maxWidth, binWidth;
+    /**
+     * Set the graphPaint style and draw the stats mean, median and standard deviation.
+     * @param canvas - to draw on
+     */
+    private void drawStats(Canvas canvas) {
+        graphPaint.setStrokeWidth(6);
+        graphPaint.setColor(Color.BLACK);
+        graphPaint.setTextSize(60);
+
+        canvas.drawText("Mean: " + greenStats.getMean(), 10, 50, graphPaint);
+        canvas.drawText("Median: " + greenStats.getMedian(), 10, 100, graphPaint);
+        canvas.drawText("Std-Dev: " + greenStats.getStdDev(), 10, 150, graphPaint);
+    }
+
+    /**
+     * Put the greenvalue frequencies grouped per bin in an array.
+     * @param curGreenArray - array containing all greenvalues
+     * @param curBinCount - amount of bins
+     * @return - the array containing all bin's heights
+     */
+    private int[] getBinHeights(int[] curGreenArray, int curBinCount) {
+        int curBin;
+        int[] binHeight = new int[curBinCount];
+
+        // Loop through all greenvalues
+        for (int curGreenValue : curGreenArray) {
+            // Calculate the bin this value belongs to
+            curBin = (int) Math.floor(curGreenValue / (256 / (double) curBinCount));
+            // Increase the bin's height
+            binHeight[curBin]++;
+        }
+
+        return binHeight;
+    }
+
+    /**
+     * Draw
+     * @param canvas
+     * @param maxBinHeight
+     * @param curBinCount
+     * @param binHeight
+     * @param maxHeight
+     * @param maxWidth
+     * @param binWidth
+     * @param graphTop
+     */
+    private void drawGraph(Canvas canvas, int maxBinHeight, int curBinCount, int[] binHeight,
+                           float maxHeight, float maxWidth, float binWidth, int graphTop) {
+        double ratio = (this.getHeight() / 2) / (double)maxBinHeight;
+        graphPaint.setColor(Color.GREEN);
+
+        for (int i = 0; i < curBinCount; i++) {
+            canvas.drawRect(180 + (i * binWidth), maxHeight - (float)(ratio * binHeight[i]),
+                    180 + (i * binWidth) + binWidth, maxHeight, graphPaint);
+            canvas.drawLine(180 + (i * binWidth), maxHeight + 3, 180 + (i * binWidth),
+                    maxHeight + 33, axePaint);
+        }
+    }
+
+    private void drawAxes(Canvas canvas, int maxBinHeight, int graphTop, int graphSize,
+                          float maxHeight, float maxWidth) {
+        graphPaint.setColor(Color.BLACK);
+
+        /* Draws the graph lines */
+        canvas.drawLine(177, maxHeight + 1, maxWidth - 20, maxHeight + 1, graphPaint);
+        canvas.drawLine(180, maxHeight + 1, 180, graphTop, graphPaint);
+
+        for(int i = 0; i < 10; i++) {
+            canvas.drawLine(150, graphTop + 3 + (i * graphSize) / 10, 180,
+                    graphTop + 3 + (i * graphSize) / 10, axePaint);
+            canvas.drawText(Integer.toString((int) ((1 - (i * 0.1)) * maxBinHeight)),
+                    20, graphTop + 15 + (i * graphSize) / 10, axePaint);
+        }
+
+        canvas.drawLine(maxWidth - 21, maxHeight + 3, maxWidth - 21, maxHeight + 33, axePaint);
+        canvas.drawLine(150, maxHeight + 1, 180, maxHeight + 1, axePaint);
+
+        canvas.drawText("0", 20, maxHeight + 8, axePaint);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -67,75 +146,35 @@ public class ImageDisplayView extends View implements ImageListener {
 
         /* If there is an image to be drawn: */
         if (this.currentImage != null) {
-            /* Center the image...
-            int left = (this.getWidth() - this.imageWidth) / 2;
-            int top = (this.getHeight() - this.imageHeight) / 2;
+            graphPaint.setColor(Color.WHITE);
+            canvas.drawPaint(graphPaint);
 
-            // ...and draw it.
-            canvas.drawBitmap(this.currentImage, 0, this.imageWidth, left, top, this.imageWidth,
-                    this.imageHeight, true, null); */
+            drawStats(canvas);
 
-            Paint paint = new Paint();
-            paint.setColor(Color.WHITE);
-            paint.setAlpha(255);
-            canvas.drawPaint(paint);
-            paint.setStrokeWidth(6);
-
-            Paint graph = new Paint();
-            graph.setColor(Color.BLACK);
-            graph.setAlpha(255);
-            graph.setStrokeWidth(6);
-            graph.setTextSize(30);
-
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(60);
-            canvas.drawText("Mean: " + greenStats.getMean(), 10, 50, paint);
-            canvas.drawText("Median: " + greenStats.getMedian(), 10, 100, paint);
-            canvas.drawText("Std-Dev: " + greenStats.getStdDev(), 10, 150, paint);
+            axePaint.setColor(Color.BLACK);
+            axePaint.setStrokeWidth(2);
+            axePaint.setTextSize(30);
 
             if(binCount > 0) {
-                curBinCount = binCount;
-                curGreenArray = greenArray.clone();
-                maxHeight = (float)(this.getHeight() / 1.5);
-                maxWidth = this.getWidth();
-                binWidth = (float)((maxWidth - 200) / (double)curBinCount);
-                binHeight = new int[curBinCount];
-                tempHeights = null;
-                curBin = 0;
-                graphTop = (int)(maxHeight - this.getHeight() / 2);
-                graphSize = (int)(maxHeight - graphTop);
+                int curBinCount = binCount;
+                int[] curGreenArray = greenArray.clone();
+                float maxHeight = (float)(this.getHeight() / 1.5);
+                float maxWidth = this.getWidth();
+                float binWidth = (float)((maxWidth - 200) / (double)curBinCount);
+                int graphTop = (int)(maxHeight - this.getHeight() / 2);
+                int graphSize = (int)(maxHeight - graphTop);
 
-                for (int curGreenValue : curGreenArray) {
-                    curBin = (int)Math.floor(curGreenValue / (256 / (double)curBinCount));
-                    binHeight[curBin]++;
-                }
+                int[] binHeight = getBinHeights(curGreenArray, curBinCount);
 
-                tempHeights = binHeight.clone();
+                // Sort a copy of the binHeights array to get the highest height (last element)
+                int[] tempHeights = binHeight.clone();
                 Arrays.sort(tempHeights);
-                double ratio = (this.getHeight() / 2) / (double)tempHeights[tempHeights.length - 1];
-                paint.setColor(Color.GREEN);
-                graph.setStrokeWidth(2);
-                for (int i = 0; i < curBinCount; i++) {
-                    canvas.drawRect(180 + (i * binWidth), maxHeight - (float)(ratio * binHeight[i]),
-                            180 + (i * binWidth) + binWidth, maxHeight, paint);
-                    canvas.drawLine(180 + (i * binWidth), maxHeight + 3, 180 + (i * binWidth),
-                            maxHeight + 33, graph);
-                }
-                paint.setColor(Color.BLACK);
-                /* Draws the graph lines and numbers */
-                canvas.drawLine(177, maxHeight + 1, maxWidth - 20, maxHeight + 1, paint);
-                canvas.drawLine(180, maxHeight + 1, 180, graphTop, paint);
+                int maxBinHeight = tempHeights[tempHeights.length - 1];
 
-                for(int i = 0; i < 10; i++) {
-                    canvas.drawLine(150, graphTop + 3 + (i * graphSize) / 10, 180,
-                            graphTop + 3 + (i * graphSize) / 10, graph);
-                    canvas.drawText(Integer.toString((int) ((1 - (i * 0.1)) * tempHeights[tempHeights.length - 1])),
-                            20, graphTop + 15 + (i * graphSize) / 10, graph);
-                }
-                canvas.drawLine(maxWidth - 21, maxHeight + 3, maxWidth - 21, maxHeight + 33, graph);
-                canvas.drawLine(150, maxHeight + 1, 180, maxHeight + 1, graph);
-
-                canvas.drawText("0", 20, maxHeight + 8, graph);
+                // Draw everything
+                drawGraph(canvas, maxBinHeight, curBinCount, binHeight, maxHeight,
+                        maxWidth, binWidth, graphTop);
+                drawAxes(canvas, maxBinHeight, graphTop, graphSize, maxHeight, maxWidth);
             }
 
         }
@@ -156,5 +195,4 @@ public class ImageDisplayView extends View implements ImageListener {
     public ImageSource getImageSource() {
         return this.source;
     }
-
 }
