@@ -72,7 +72,7 @@ public class ImageDisplayView extends View implements ImageListener {
 
         canvas.drawText("Mean: " + greenStats.getMean(), 10, 50, graphPaint);
         canvas.drawText("Median: " + greenStats.getMedian(), 10, 100, graphPaint);
-        canvas.drawText("Std-Dev: " + greenStats.getStdDev(), 10, 150, graphPaint);
+        canvas.drawText("Standard deviation: " + greenStats.getStdDev(), 10, 150, graphPaint);
     }
 
     /**
