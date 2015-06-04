@@ -3,6 +3,7 @@
  * of the UvA Informatica bachelor.
  *
  * Nardi Lam, 2015 (based on code by I.M.J. Kamps, S.J.R. van Schaik, R. de Vries, 2013)
+ * Af gemaakt door Bart van den Aardweg en Lars Wenker
  */
 
 package nl.uva.multimedia.image;
@@ -119,14 +120,18 @@ public class ImageDisplayView extends View implements ImageListener {
         }
     }
 
+    /* Draws the  axes for the graph */
     private void drawAxes(Canvas canvas, int maxBinHeight, int graphTop, int graphSize,
                           float maxHeight, float maxWidth) {
         graphPaint.setColor(Color.BLACK);
 
-        /* Draws the graph lines */
+        /* X axis */
         canvas.drawLine(177, maxHeight + 1, maxWidth - 20, maxHeight + 1, graphPaint);
+
+        /* Y axis */
         canvas.drawLine(180, maxHeight + 1, 180, graphTop, graphPaint);
 
+        /* Divides the y axis in 10 equal parts, and labels these gradation s */
         for(int i = 0; i < 10; i++) {
             canvas.drawLine(150, graphTop + 3 + (i * graphSize) / 10, 180,
                     graphTop + 3 + (i * graphSize) / 10, axePaint);
@@ -134,9 +139,11 @@ public class ImageDisplayView extends View implements ImageListener {
                     20, graphTop + 15 + (i * graphSize) / 10, axePaint);
         }
 
+        /* Marks the end of X axis */
         canvas.drawLine(maxWidth - 21, maxHeight + 3, maxWidth - 21, maxHeight + 33, axePaint);
-        canvas.drawLine(150, maxHeight + 1, 180, maxHeight + 1, axePaint);
 
+        /* Marks the 0 point on the Y axis */
+        canvas.drawLine(150, maxHeight + 1, 180, maxHeight + 1, axePaint);
         canvas.drawText("0", 20, maxHeight + 8, axePaint);
     }
 
