@@ -35,7 +35,7 @@ public class ImageActivity extends Activity {
     final int SOURCE_FRONT_CAMERA = 1;
     final int SOURCE_IMAGE = 2;
     private int binCount = 0;
-    private int counter = 0;
+    private int oldBinCount = 0;
     private CameraImageSource cis;
     private FileImageSource fis;
 
@@ -92,25 +92,19 @@ public class ImageActivity extends Activity {
                 /* Listener for the seekbar */
                 new SeekBar.OnSeekBarChangeListener() {
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        oldBinCount = binCount;
                         binCount = progress + 1;
                         t.setText(Integer.toString(binCount));
                         ImageDisplayView.setbinCount(binCount);
 
                         /* Checks if the freeze button is checked, and manually calls the invalidate
                          * function to redraw the graph when bin count is changed during freeze. The
-                         * counter ensures only every first or 10th change is redrawn to increase
-                         * performance.
+                         * graph will only be redrawn if the difference in binCount is larger than 10
                          */
                         CompoundButton freeze = (CompoundButton)findViewById(R.id.freeze_toggle);
-                        if(freeze.isChecked()) {
-                            counter++;
-                            if(counter == 1 || counter == 10) {
+                        if(freeze.isChecked() && Math.abs(binCount - oldBinCount) > 5) {
                                 ImageDisplayView idv = (ImageDisplayView) findViewById(R.id.display_view);
                                 idv.invalidate();
-                                if(counter == 10) {
-                                    counter = 0;
-                                }
-                            }
                         }
                    }
 
