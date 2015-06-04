@@ -132,7 +132,7 @@ public class ImageDisplayView extends View implements ImageListener {
                     canvas.drawText(Integer.toString((int) ((1 - (i * 0.1)) * tempHeights[tempHeights.length - 1])),
                             20, graphTop + 15 + (i * graphSize) / 10, graph);
                 }
-                canvas.drawLine(maxWidth - 23, maxHeight + 3, maxWidth - 23, maxHeight + 33, graph);
+                canvas.drawLine(maxWidth - 21, maxHeight + 3, maxWidth - 21, maxHeight + 33, graph);
                 canvas.drawLine(150, maxHeight + 1, 180, maxHeight + 1, graph);
 
                 canvas.drawText("0", 20, maxHeight + 8, graph);
