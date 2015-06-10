@@ -13,7 +13,8 @@
         <activity
             android:name=".ImageActivity"
             android:configChanges="orientation|screenSize"
-            android:label="Multimedia - Image Processing" >
+            android:label="Multimedia - Image Processing"
+            android:screenOrientation="portrait" >
 
             <!--
                 TODO: Dit "intent filter" geeft aan dat een Activity vanuit de app-launcher op te

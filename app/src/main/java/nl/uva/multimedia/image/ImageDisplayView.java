@@ -4,6 +4,11 @@
  *
  * Nardi Lam, 2015 (based on code by I.M.J. Kamps, S.J.R. van Schaik, R. de Vries, 2013)
  * Af gemaakt door Bart van den Aardweg en Lars Wenker
+ * Groep 55
+ *
+ * Deze klasse heeft functies om statistieken en een grafiek van de groen-waarden in alle pixels
+ * uit een plaatje om het scherm te tekenen. De bron van het plaatje en de grootte van de bins
+ * kan door de gebruiker aangepast worden.
  */
 
 package nl.uva.multimedia.image;
